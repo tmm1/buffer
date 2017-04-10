@@ -2,6 +2,7 @@ package buffer
 
 import (
 	"io"
+	"log"
 	"math"
 
 	"github.com/djherbis/buffer/wrapio"
@@ -45,6 +46,7 @@ func (buf *ring) Write(p []byte) (n int, err error) {
 	n, err = buf.WrapWriter.Write(p)
 	buf.L += int64(n)
 	if buf.L > buf.BufferAt.Cap() {
+		log.Printf("[WARN] Ring buffer %p overflowed by %d bytes", buf, buf.L-buf.BufferAt.Cap())
 		buf.L = buf.BufferAt.Cap()
 	}
 	return n, err
